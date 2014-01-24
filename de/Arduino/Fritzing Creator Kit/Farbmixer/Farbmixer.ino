@@ -8,9 +8,11 @@ int potPin=0;
 int mixSelectPin=2;
 int mixSelect = 0;
 boolean mixSelectPressed = false;
+int MODES = 3;
 int modeSelectPin = 8;
 int modeSelect = 0;
 int modeSelectPressed = false;
+int frame = 0;
 
 int valRed = 255;
 int valGreen = 255;
@@ -31,7 +33,7 @@ void loop(){
   if (digitalRead(modeSelectPin) == LOW) {
     if (!modeSelectPressed) {
       modeSelectPressed = true;
-      modeSelect = (modeSelect + 1)%2;
+      modeSelect = (modeSelect + 1)%MODES;
       
       if (modeSelect > 0) {
         valRed = 255;
@@ -53,25 +55,62 @@ void loop(){
     mixSelectPressed = false;
   }
   
-  if (modeSelect == 0) {
-    valRed = mixSelect == 0 ? 255 : 0;
-    valGreen = mixSelect == 1 ? 255 : 0;
-    valBlue = mixSelect == 2 ? 255 : 0;
-  } else {
-    int potValue = map(analogRead(potPin),0,1024,0,255);
-    switch (mixSelect) {
-      case 0:
-        valRed = potValue;
-        break;
-        
-      case 1:
-        valGreen = potValue;
-        break;
-        
+  int potValue;
+  switch (modeSelect) {
+    case 0:
+      valRed = mixSelect == 0 ? 255 : 0;
+      valGreen = mixSelect == 1 ? 255 : 0;
+      valBlue = mixSelect == 2 ? 255 : 0;
+      break;
+
+    case 1:
+      potValue = map(analogRead(potPin),0,1024,0,255);
+      switch (mixSelect) {
+        case 0:
+          valRed = potValue;
+          break;
+          
+        case 1:
+          valGreen = potValue;
+          break;
+          
+        case 2:
+          valBlue = potValue;
+          break;
+      }
+      break;
+      
       case 2:
-        valBlue = potValue;
+        int speed = map(analogRead(potPin),0,1024,0,20);
+
+        frame = (frame + speed)%900;
+        
+        if (frame<150) {                                   // wenn frame < 150  > rot
+          valRed = 255;                         // LED wird eingeschaltet
+          valBlue = 0;                          // LED wird abgeschaltet
+          valGreen = 0;                         // LED wird abgeschaltet
+        } else if (frame<300) {                            // wenn frame < 300
+          valRed = map(frame,150,300,255,0);    // LED wird ausgedimmt
+          valBlue = map(frame,150,300,0,255);   // LED wird angedimmt 
+          valGreen = 0;                         // LED wird abgeschaltet
+        } else if (frame<450) {                            // wenn frame < 450  > blau
+          valRed = 0;                           // LED wird abgeschaltet
+          valBlue = 255;                        // LED wird eingeschaltet
+          valGreen = 0;                         // LED wird abgeschaltet  
+        } else if (frame<600) {                            // wenn frame < 600
+          valRed = 0;                           // LED wird abgeschaltet
+          valBlue = map(frame,450,600,255,0);   // LED wird ausgedimmt 
+          valGreen = map(frame,450,600,0,255);  // LED wird angedimmt
+        } else if (frame<750) {                            // wenn frame < 750  > grün
+          valRed = 0;                           // LED wird abgeschaltet
+          valBlue = 0;                          // LED wird abgeschaltet 
+          valGreen = 255;                       // LED wird abgeschaltet
+        } else if (frame<900) {                            // wenn frame < 900
+          valRed = map(frame,750,900,0,255);    // LED wird angedimmt
+          valBlue = 0;                          // LED wird abgeschaltet 
+          valGreen = map(frame,750,900,255,0);  // LED wird ausgedimmt
+        }
         break;
-    }
   }
 
   analogWrite(LEDRed,valRed);                         // LED wird eingeschaltet
