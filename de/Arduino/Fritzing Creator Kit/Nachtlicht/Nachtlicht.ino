@@ -8,6 +8,8 @@
 int LEDGreen=9;                                      // LEDGreen Pins wird deklariert
 int LEDBlue=10;                                      // LEDBlue Pins wird deklariert
 int LEDRed=11;                                       // LEDRed Pins wird deklariert 
+int potPin=0;
+int frame;
 
 void setup(){
   pinMode(LEDRed,OUTPUT);                            // Pin wird als OUTPUT initialisiert
@@ -16,7 +18,13 @@ void setup(){
 }
 
 void loop(){
- for (int frame=0; frame<900; frame++){              // frame wird von 0 bis 900 hochgezählt
+  int potValue = analogRead(potPin);
+  if (potValue < 900) {
+    frame = potValue;
+  } else {
+    frame = (frame + 1)%900;
+  }
+  
   if (frame<150) {                                   // wenn frame < 150  > rot
     analogWrite(LEDRed,255);                         // LED wird eingeschaltet
     analogWrite(LEDBlue,0);                          // LED wird abgeschaltet
@@ -43,7 +51,6 @@ void loop(){
     analogWrite(LEDGreen,map(frame,750,900,255,0));  // LED wird ausgedimmt
   }
   delay(10);                                         // kurze Pause
- }
 }
 
 
