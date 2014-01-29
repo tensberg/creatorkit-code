@@ -106,7 +106,7 @@ void update(){
   switch (gameState) {                                   // in welchem Modus befindet sich das Programm
   case 0:                                                // neues Spiel
     memcpy(image,blank,sizeof(blank));                   // Bildschirm wird gelöscht
-    gameSpeed=300;                                       // Spieltempo wird festgelegt
+    gameSpeed=600;                                       // Spieltempo wird festgelegt
     ballXPosition=3;                                     // festlegen der Ballposition
     ballYPosition=3;                                     // festlegen der Ballposition
     ballYSpeed=0;                                        // Ball fliegt am Anfang gerade
@@ -121,16 +121,20 @@ void update(){
   case 1:                                                // Spiel aktiv
     image[player1Position][0]=0;                         // Paddel Player 1 alte Position löschen
     image[player1Position+1][0]=0;                       // Paddel Player 1 alte Position löschen
+    image[player1Position+2][0]=0;                       // Paddel Player 1 alte Position löschen
     image[player2Position][7]=0;                         // Paddel Player 2 alte Position löschen
     image[player2Position+1][7]=0;                       // Paddel Player 2 alte Position löschen
+    image[player2Position+2][7]=0;                       // Paddel Player 2 alte Position löschen
 
-    player1Position=map(analogRead(pot1Pin),0,1023,0,6); // liest die Position von Spieler 1 aus
-    player2Position=map(analogRead(pot2Pin),0,1023,0,6); // liest die Position von Spieler 2 aus
+    player1Position=map(analogRead(pot1Pin),0,1023,0,5); // liest die Position von Spieler 1 aus
+    player2Position=map(analogRead(pot2Pin),0,1023,0,5); // liest die Position von Spieler 2 aus
     
     image[player1Position][0]=1;                         // Paddel Player 1 darstellen              
     image[player1Position+1][0]=1;                       // Paddel Player 1 darstellen    
+    image[player1Position+2][0]=1;                       // Paddel Player 1 darstellen    
     image[player2Position][7]=1;                         // Paddel Player 2 darstellen              
     image[player2Position+1][7]=1;                       // Paddel Player 2 darstellen        
+    image[player2Position+2][7]=1;                       // Paddel Player 2 darstellen        
   
     if (millis()>theTimer+gameSpeed){                    // timer für Spielgeschwindigkeit
       if (gameSpeed>50) gameSpeed-=3;                    // spiel wird beschleunigt    
