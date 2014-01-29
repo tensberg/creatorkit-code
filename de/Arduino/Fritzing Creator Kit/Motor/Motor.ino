@@ -6,7 +6,7 @@
 */
 
 int motor_A=5;
-int motor_B=4;
+int motor_B=6;
 int motor_Speed=3;
 
 void setup(){
